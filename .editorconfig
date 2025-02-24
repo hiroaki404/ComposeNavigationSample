@@ -1,0 +1,17 @@
+# noinspection EditorConfigKeyCorrectness
+[*.{kt,kts}]
+ktlint_version = 1.3.1
+ktlint_code_style = android_studio
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_function-naming = disabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_package-naming = disabled
+ktlint_standard_package-name = disabled
+ktlint_standard_max-line-length = disabled
+ktlint_standard_property-naming = disabled
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_function-signature = disabled
+ktlint_standard_class-signature = disabled
+disabled_rules = import-ordering
