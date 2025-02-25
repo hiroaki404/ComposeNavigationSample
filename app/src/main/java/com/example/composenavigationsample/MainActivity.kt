@@ -16,11 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation.navArgument
 import com.example.composenavigationsample.ui.BirdDetailScreen
 import com.example.composenavigationsample.ui.BirdListScreen
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                                     }
                                 }
-                            }
+                            },
                         )
                     },
                 ) { innerPadding ->
@@ -57,13 +58,18 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = BirdList,
                     ) {
-                        composable<BirdList> {
+                        composable("birdList") {
                             BirdListScreen { birdId ->
-                                navController.navigate(BirdDetail(id = birdId))
+                                navController.navigate("birdDetail/$birdId")
                             }
                         }
-                        composable<BirdDetail> { backStackEntry ->
-                            val birdId = backStackEntry.toRoute<BirdDetail>().id
+                        composable(
+                            "birdDetail",
+                            arguments = listOf(
+                                navArgument("birdId") { type = NavType.IntType },
+                            ),
+                        ) { backStackEntry ->
+                            val birdId = backStackEntry.arguments!!.getInt("birdId")
                             BirdDetailScreen(birdId = birdId)
                         }
                     }
