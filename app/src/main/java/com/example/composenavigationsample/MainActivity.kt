@@ -24,8 +24,10 @@ import androidx.navigation.toRoute
 import com.example.composenavigationsample.ui.BirdDetailScreen
 import com.example.composenavigationsample.ui.BirdListScreen
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                                     }
                                 }
-                            }
+                            },
                         )
                     },
                 ) { innerPadding ->
@@ -78,3 +80,20 @@ object BirdList
 
 @Serializable
 data class BirdDetail(val id: Int)
+
+// sealed interface Destination {
+//    @Serializable
+//    data object BirdList : Destination
+//
+//    @Serializable
+//    data class BirdDetail(val id: Int) : Destination
+// }
+//
+// class BirdListViewModel(
+//    savedStateHandle: SavedStateHandle,
+// ) : ViewModel() {
+//    init {
+//        savedStateHandle.toRoute<BirdList>()
+//    }
+// }
+//

@@ -14,18 +14,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composenavigationsample.birdList
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun BirdListScreen(
+    viewModel: BirdListViewModel = hiltViewModel(),
     onBirdClick: (Int) -> Unit,
 ) {
     LazyColumn {
-        items(birdList) {
+        items(viewModel.birds) {
             Row(
-                modifier = Modifier.fillMaxWidth().clickable {
-                    onBirdClick(it.id)
-                }.padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onBirdClick(it.id)
+                    }
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
