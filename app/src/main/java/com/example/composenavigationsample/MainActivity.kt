@@ -67,6 +67,18 @@ class MainActivity : ComponentActivity() {
                         composable<BirdDetail> { backStackEntry ->
                             val birdId = backStackEntry.toRoute<BirdDetail>().id
                             BirdDetailScreen(birdId = birdId)
+
+// Don't use this pattern
+//                            BirdDetailScreen(
+//                                birdId = birdId,
+//                                viewModel = hiltViewModel(
+//                                    creationCallback = { factory: BirdDetailViewModel2Factory ->
+//                                        factory.create(birdId)
+//                                    },
+//                                ),
+//                            )
+                        }
+
                         }
                     }
                 }
