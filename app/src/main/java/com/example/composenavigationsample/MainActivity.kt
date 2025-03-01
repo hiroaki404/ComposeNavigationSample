@@ -1,6 +1,8 @@
 package com.example.composenavigationsample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +16,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
@@ -27,10 +31,12 @@ import com.example.composenavigationsample.ui.BirdDetailScreen
 import com.example.composenavigationsample.ui.BirdListScreen
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @SuppressLint("RestrictedApi")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +44,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
+            val backstack by navController.currentBackStack.collectAsState()
+
+            LaunchedEffect(backstack) {
+                backstack.map {
+                    it.destination.route?.replace(
+                        "$packageName.",
+                        "",
+                    )?.split("/")?.firstOrNull()?.substringBefore("?")
+                }.joinToString(",").let {
+                    Log.d("backstack", it)
+                }
+            }
+
             ComposeNavigationSampleTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -63,13 +82,17 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<BirdList> {
                             BirdListScreen { birdId ->
-//                                navController.navigate(BirdDetail(id = birdId))
-                                navController.navigate(DialogDestinationSample)
+                                navController.navigate(BirdDetail(id = birdId))
                             }
                         }
                         composable<BirdDetail> { backStackEntry ->
                             val birdId = backStackEntry.toRoute<BirdDetail>().id
                             BirdDetailScreen(birdId = birdId)
+
+                            LaunchedEffect(Unit) {
+                                delay(5000)
+                                navController.navigate(DialogDestinationSample)
+                            }
 
 // Don't use this pattern
 //                            BirdDetailScreen(
