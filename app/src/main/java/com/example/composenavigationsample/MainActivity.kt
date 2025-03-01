@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.composenavigationsample.ui.BirdDetailScreen
@@ -61,7 +63,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<BirdList> {
                             BirdListScreen { birdId ->
-                                navController.navigate(BirdDetail(id = birdId))
+//                                navController.navigate(BirdDetail(id = birdId))
+                                navController.navigate(DialogDestinationSample)
                             }
                         }
                         composable<BirdDetail> { backStackEntry ->
@@ -78,7 +81,29 @@ class MainActivity : ComponentActivity() {
 //                                ),
 //                            )
                         }
-
+                        dialog<DialogDestinationSample>(
+                            dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+                        ) {
+                            Scaffold(
+                                modifier = Modifier.fillMaxSize(),
+                                topBar = {
+                                    TopAppBar(
+                                        title = {
+                                            Text("Dialog")
+                                        },
+                                        navigationIcon = {
+                                            IconButton(onClick = { navController.popBackStack() }) {
+                                                Icon(
+                                                    Icons.Filled.ArrowBack,
+                                                    contentDescription = "Back",
+                                                )
+                                            }
+                                        },
+                                    )
+                                },
+                            ) { innerPadding ->
+                                Text(modifier = Modifier.padding(innerPadding), text = "Dialog")
+                            }
                         }
                     }
                 }
@@ -92,6 +117,9 @@ object BirdList
 
 @Serializable
 data class BirdDetail(val id: Int)
+
+@Serializable
+object DialogDestinationSample
 
 // sealed interface Destination {
 //    @Serializable
