@@ -87,13 +87,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<BirdDetail> { backStackEntry ->
                             val birdId = backStackEntry.toRoute<BirdDetail>().id
-                            BirdDetailScreen(birdId = birdId)
-
-                            LaunchedEffect(Unit) {
-                                delay(5000)
+                            BirdDetailScreen(birdId = birdId) {
                                 navController.navigate(DialogDestinationSample)
                             }
-
 // Don't use this pattern
 //                            BirdDetailScreen(
 //                                birdId = birdId,

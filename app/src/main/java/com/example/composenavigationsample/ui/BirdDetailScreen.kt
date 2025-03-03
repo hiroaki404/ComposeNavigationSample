@@ -1,5 +1,6 @@
 package com.example.composenavigationsample.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,12 +17,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun BirdDetailScreen(
     birdId: Int,
     viewModel: BirdDetailViewModel = hiltViewModel(),
+    onClick: () -> Unit,
 ) {
     viewModel.bird?.let {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .clickable(onClick = onClick),
         ) {
             Text(
                 text = it.name,
