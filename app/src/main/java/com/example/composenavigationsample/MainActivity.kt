@@ -80,26 +80,15 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = BirdList,
                     ) {
-                        composable<BirdList> {
-                            BirdListScreen { birdId ->
+                        birdsGraph(
+                            onListItemClick = { birdId ->
                                 navController.navigate(BirdDetail(id = birdId))
-                            }
-                        }
-                        composable<BirdDetail> { backStackEntry ->
-                            val birdId = backStackEntry.toRoute<BirdDetail>().id
-                            BirdDetailScreen(birdId = birdId) {
+                            },
+                            onBirdDetailClick = {
                                 navController.navigate(DialogDestinationSample)
-                            }
-// Don't use this pattern
-//                            BirdDetailScreen(
-//                                birdId = birdId,
-//                                viewModel = hiltViewModel(
-//                                    creationCallback = { factory: BirdDetailViewModel2Factory ->
-//                                        factory.create(birdId)
-//                                    },
-//                                ),
-//                            )
-                        }
+                            },
+                        )
+
                         dialog<DialogDestinationSample>(
                             dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                         ) {
