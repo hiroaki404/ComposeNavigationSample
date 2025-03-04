@@ -8,7 +8,7 @@ import com.example.composenavigationsample.ui.BirdListScreen
 
 fun NavGraphBuilder.birdsGraph(
     onListItemClick: (Int) -> Unit,
-    onBirdDetailClick: () -> Unit,
+    onBirdDetailClick: (Int) -> Unit,
 ) {
     birdListDestination(onListItemClick)
     birdDetailDestination(onBirdDetailClick)
@@ -20,9 +20,9 @@ fun NavGraphBuilder.birdListDestination(onListItemClick: (Int) -> Unit) {
     }
 }
 
-fun NavGraphBuilder.birdDetailDestination(onBirdDetailClick: () -> Unit) {
+fun NavGraphBuilder.birdDetailDestination(onBirdDetailClick: (Int) -> Unit) {
     composable<BirdDetail> { backStackEntry ->
         val birdId = backStackEntry.toRoute<BirdDetail>().id
-        BirdDetailScreen(birdId = birdId, onClick = onBirdDetailClick)
+        BirdDetailScreen(birdId = birdId, onClick = { onBirdDetailClick(birdId) })
     }
 }
