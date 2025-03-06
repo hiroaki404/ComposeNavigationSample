@@ -22,16 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.composenavigationsample.ui.BirdDetailScreen
-import com.example.composenavigationsample.ui.BirdListScreen
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
@@ -75,6 +71,7 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                 ) { innerPadding ->
+
                     NavHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
@@ -92,12 +89,13 @@ class MainActivity : ComponentActivity() {
                         dialog<DialogDestinationSample>(
                             dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
                         ) {
+                            val birdId = it.toRoute<DialogDestinationSample>().id
                             Scaffold(
                                 modifier = Modifier.fillMaxSize(),
                                 topBar = {
                                     TopAppBar(
                                         title = {
-                                            Text("Dialog")
+                                            Text("Dialog $birdId")
                                         },
                                         navigationIcon = {
                                             IconButton(onClick = { navController.popBackStack() }) {
@@ -127,7 +125,7 @@ object BirdList
 data class BirdDetail(val id: Int)
 
 @Serializable
-object DialogDestinationSample
+data class DialogDestinationSample(val id: Int)
 
 // sealed interface Destination {
 //    @Serializable
