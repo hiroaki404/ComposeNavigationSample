@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
@@ -43,6 +44,15 @@ class MainActivity : ComponentActivity() {
             val backstack by navController.currentBackStack.collectAsState()
 
             LaunchedEffect(backstack) {
+                backStackEntry?.destination?.hierarchy?.map {
+                    it.route?.replace(
+                        "$packageName.",
+                        "",
+                    )?.split("/")?.firstOrNull()?.substringBefore(
+                        "?",
+                    )
+                }?.joinToString(",")
+                    ?.let { Log.d("backstackEntry", it) }
                 backstack.map {
                     it.destination.route?.replace(
                         "$packageName.",
