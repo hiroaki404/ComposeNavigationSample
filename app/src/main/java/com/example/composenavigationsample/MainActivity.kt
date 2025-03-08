@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.collection.forEach
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -21,7 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
@@ -42,6 +45,14 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
             val backstack by navController.currentBackStack.collectAsState()
+
+            LaunchedEffect(Unit) {
+                navController.graph.joinToString("\n") { navDestination ->
+                    navDestination.childLogString("$packageName.").joinToString("\n")
+                }.let {
+                    Log.d("navController.graph", it)
+                }
+            }
 
             LaunchedEffect(backstack) {
                 backStackEntry?.destination?.hierarchy?.map {
@@ -126,6 +137,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+private fun String.removeString(removedString: String): String = replace(removedString, "")
+
+private fun NavDestination.childLogString(removedString: String): List<String?> {
+    val nodesRoute: MutableList<String?> = mutableListOf()
+    nodesRoute.add(("$route".removeString(removedString)))
+    (this as? NavGraph)?.nodes?.forEach { _, destination ->
+        nodesRoute.addAll(destination.childLogString(removedString).map { "\t$it" })
+    }
+    return nodesRoute
 }
 
 @Serializable

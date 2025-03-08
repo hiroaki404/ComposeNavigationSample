@@ -46,5 +46,6 @@ fun BirdDetailScreen(
 fun BirdDetailScreenPreview() {
     BirdDetailScreen(
         birdId = 1,
+        onClick = {},
     )
 }
