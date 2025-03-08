@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(BirdDetail(id = birdId))
                             },
                             onBirdDetailClick = {
-                                navController.navigate(DialogDestinationSample)
+                                navController.navigate(DialogDestinationSample(it))
                             },
                         )
 
