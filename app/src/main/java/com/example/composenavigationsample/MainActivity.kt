@@ -26,8 +26,10 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
@@ -106,6 +108,23 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(DialogDestinationSample)
                             },
                         )
+
+                        navigation(route = "nested_sample", startDestination = "s1") {
+                            composable("s1") {
+                                Text("s1")
+                            }
+                            composable("s2") {
+                                Text("s2")
+                            }
+                            navigation(route = "nested_sample2", startDestination = "s3") {
+                                composable("s3") {
+                                    Text("s3")
+                                }
+                                composable("s4") {
+                                    Text("s4")
+                                }
+                            }
+                        }
 
                         dialog<DialogDestinationSample>(
                             dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
