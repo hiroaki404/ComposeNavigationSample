@@ -81,6 +81,8 @@ class MainActivity : ComponentActivity() {
 
                         nestedSampleGraph()
 
+                        mainGraph()
+
                         dialogGraph(navController)
                     }
 
