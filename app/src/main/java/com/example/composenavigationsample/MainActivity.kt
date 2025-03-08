@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
                         nestedSampleGraph()
 
-                        mainGraph()
+                        mainGraph(onGoToBirdListButtonClick = { navController.navigate(BirdList) })
 
                         dialogGraph(navController)
                     }

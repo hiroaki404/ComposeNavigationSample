@@ -1,10 +1,16 @@
 package com.example.composenavigationsample.navigation
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -14,25 +20,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-fun NavGraphBuilder.mainGraph() {
+fun NavGraphBuilder.mainGraph(onGoToBirdListButtonClick: () -> Unit) {
     composable<MainRoute.Main> {
-        MainNavHost()
+        MainNavHost(onGoToBirdListButtonClick)
     }
 }
 
 @Composable
-fun MainNavHost() {
-    val navController = rememberNavController()
-    val backstack by navController.currentBackStackEntryAsState()
+fun MainNavHost(onGoToBirdListButtonClick: () -> Unit) {
+    val mainNavController = rememberNavController()
+    val backstack by mainNavController.currentBackStackEntryAsState()
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -45,10 +54,12 @@ fun MainNavHost() {
                             )
                         },
                         label = { Text(topLevelRoute.name) },
-                        selected = backstack?.destination?.route == topLevelRoute.route::class.qualifiedName,
+                        selected = backstack?.destination?.hierarchy?.any {
+                            it.route == topLevelRoute.route::class.qualifiedName
+                        } ?: false,
                         onClick = {
-                            navController.navigate(topLevelRoute.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
+                            mainNavController.navigate(topLevelRoute.route) {
+                                popUpTo(mainNavController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
@@ -62,19 +73,29 @@ fun MainNavHost() {
     ) { innerPadding ->
         NavHost(
             modifier = Modifier.padding(innerPadding),
-            navController = navController,
+            navController = mainNavController,
             startDestination = MainRoute.Home,
         ) {
-            homeRoute()
+            homeRoute(onGoToBirdListButtonClick)
             searchRoute()
-            settingsRoute()
+            settingsRoute(
+                goToAccount = { mainNavController.navigate(MainRoute.Account) },
+                goToNotification = { mainNavController.navigate(MainRoute.Notification) },
+            )
         }
     }
 }
 
-fun NavGraphBuilder.homeRoute() {
+fun NavGraphBuilder.homeRoute(onGoToBirdListButtonClick: () -> Unit) {
     composable<MainRoute.Home> {
-        Text("Home")
+        Column {
+            Text("Welcome to Bird Dictionary!")
+            Button(
+                onClick = onGoToBirdListButtonClick,
+            ) {
+                Text("Go to Bird List!")
+            }
+        }
     }
 }
 
@@ -84,9 +105,41 @@ fun NavGraphBuilder.searchRoute() {
     }
 }
 
-fun NavGraphBuilder.settingsRoute() {
-    composable<MainRoute.Settings> {
-        Text("Settings")
+fun NavGraphBuilder.settingsRoute(
+    goToAccount: () -> Unit,
+    goToNotification: () -> Unit,
+) {
+    navigation<MainRoute.Settings>(startDestination = MainRoute.SettingsRows) {
+        composable<MainRoute.SettingsRows> {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .clickable(onClick = goToAccount),
+                ) {
+                    Text("Account")
+                }
+                HorizontalDivider()
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .clickable(onClick = goToNotification),
+                ) {
+                    Text("Notification")
+                }
+                HorizontalDivider()
+            }
+        }
+
+        composable<MainRoute.Account> {
+            Text("Account")
+        }
+
+        composable<MainRoute.Notification> {
+            Text("Notification")
+        }
     }
 }
 
@@ -103,6 +156,15 @@ sealed interface MainRoute {
 
     @Serializable
     data object Settings : MainRoute
+
+    @Serializable
+    data object SettingsRows : MainRoute
+
+    @Serializable
+    data object Account : MainRoute
+
+    @Serializable
+    data object Notification : MainRoute
 }
 
 data class TopLevelRoute<T : Any>(val name: String, val route: T, val icon: ImageVector)
