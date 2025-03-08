@@ -21,17 +21,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.dialog
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import com.example.composenavigationsample.navigation.birdsGraph
+import com.example.composenavigationsample.navigation.dialogGraph
+import com.example.composenavigationsample.navigation.nestedSampleGraph
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
@@ -48,6 +46,7 @@ class MainActivity : ComponentActivity() {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val backstack by navController.currentBackStack.collectAsState()
 
+            // log navGraph
             LaunchedEffect(Unit) {
                 navController.graph.joinToString("\n") { navDestination ->
                     navDestination.childLogString("$packageName.").joinToString("\n")
@@ -56,6 +55,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            // log backstack
             LaunchedEffect(backstack) {
                 backStackEntry?.destination?.hierarchy?.map {
                     it.route?.replace(
@@ -109,48 +109,9 @@ class MainActivity : ComponentActivity() {
                             },
                         )
 
-                        navigation(route = "nested_sample", startDestination = "s1") {
-                            composable("s1") {
-                                Text("s1")
-                            }
-                            composable("s2") {
-                                Text("s2")
-                            }
-                            navigation(route = "nested_sample2", startDestination = "s3") {
-                                composable("s3") {
-                                    Text("s3")
-                                }
-                                composable("s4") {
-                                    Text("s4")
-                                }
-                            }
-                        }
+                        nestedSampleGraph()
 
-                        dialog<DialogDestinationSample>(
-                            dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
-                        ) {
-                            val birdId = it.toRoute<DialogDestinationSample>().id
-                            Scaffold(
-                                modifier = Modifier.fillMaxSize(),
-                                topBar = {
-                                    TopAppBar(
-                                        title = {
-                                            Text("Dialog $birdId")
-                                        },
-                                        navigationIcon = {
-                                            IconButton(onClick = { navController.popBackStack() }) {
-                                                Icon(
-                                                    Icons.Filled.ArrowBack,
-                                                    contentDescription = "Back",
-                                                )
-                                            }
-                                        },
-                                    )
-                                },
-                            ) { innerPadding ->
-                                Text(modifier = Modifier.padding(innerPadding), text = "Dialog")
-                            }
-                        }
+                        dialogGraph(navController)
                     }
                 }
             }
@@ -177,20 +138,3 @@ data class BirdDetail(val id: Int)
 
 @Serializable
 data class DialogDestinationSample(val id: Int)
-
-// sealed interface Destination {
-//    @Serializable
-//    data object BirdList : Destination
-//
-//    @Serializable
-//    data class BirdDetail(val id: Int) : Destination
-// }
-//
-// class BirdListViewModel(
-//    savedStateHandle: SavedStateHandle,
-// ) : ViewModel() {
-//    init {
-//        savedStateHandle.toRoute<BirdList>()
-//    }
-// }
-//
