@@ -8,4 +8,4 @@ import javax.inject.Inject
 @HiltViewModel
 class BirdListViewModel @Inject constructor() : ViewModel() {
     val birds = birdList
-} 
+}
