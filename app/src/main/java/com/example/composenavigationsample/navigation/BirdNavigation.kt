@@ -10,11 +10,18 @@ import com.example.composenavigationsample.ui.BirdDetailScreen
 import com.example.composenavigationsample.ui.BirdListScreen
 
 fun NavGraphBuilder.birdsGraph(
-    onListItemClick: (Int) -> Unit,
-    onBirdDetailClick: (Int) -> Unit,
+    navController: NavController,
 ) {
-    birdListDestination(onListItemClick)
-    birdDetailDestination(onBirdDetailClick)
+    birdListDestination(
+        onListItemClick = { birdId ->
+            navController.navigateToDetail(birdId)
+        },
+    )
+    birdDetailDestination(
+        onBirdDetailClick = { birdId ->
+            navController.navigateToDetail(birdId)
+        },
+    )
 }
 
 fun NavGraphBuilder.birdListDestination(onListItemClick: (Int) -> Unit) {

@@ -66,14 +66,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = BirdList,
                     ) {
-                        birdsGraph(
-                            onListItemClick = { birdId ->
-                                navController.navigate(BirdDetail(id = birdId))
-                            },
-                            onBirdDetailClick = {
-                                navController.navigate(DialogDestinationSample(it))
-                            },
-                        )
+                        birdsGraph(navController)
 
                         nestedSampleGraph()
 
