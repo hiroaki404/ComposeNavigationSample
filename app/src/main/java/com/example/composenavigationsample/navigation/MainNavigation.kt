@@ -32,12 +32,15 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+// ⚠️This method is not recommended. It causes issues with deeplink handling and results in two navControllers, making it more complex.
 fun NavGraphBuilder.mainGraph(onGoToBirdListButtonClick: () -> Unit) {
     composable<MainRoute.Main> {
         MainNavHost(onGoToBirdListButtonClick)
     }
 }
 
+// ⚠️This method is not recommended. It causes issues with deeplink handling and results in two navControllers, making it more complex.
+// But it is useful for bottom navigation sample.
 @Composable
 fun MainNavHost(onGoToBirdListButtonClick: () -> Unit) {
     val mainNavController = rememberNavController()

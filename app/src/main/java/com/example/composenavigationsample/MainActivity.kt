@@ -22,8 +22,6 @@ import com.example.composenavigationsample.logging.LogBackStackEntryEffect
 import com.example.composenavigationsample.logging.LogNavGraphEffect
 import com.example.composenavigationsample.navigation.MainRoute
 import com.example.composenavigationsample.navigation.birdsGraph
-import com.example.composenavigationsample.navigation.dialogGraph
-import com.example.composenavigationsample.navigation.mainGraph
 import com.example.composenavigationsample.navigation.nestedSampleGraph
 import com.example.composenavigationsample.ui.theme.ComposeNavigationSampleTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,9 +68,8 @@ class MainActivity : ComponentActivity() {
 
                         nestedSampleGraph()
 
-                        mainGraph(onGoToBirdListButtonClick = { navController.navigate(BirdList) })
-
-                        dialogGraph(navController)
+                        // ⚠️This method is not recommended. It causes issues with deeplink handling and results in two navControllers, making it more complex.
+//                        dialogGraph(navController)
                     }
 
                     LogNavGraphEffect(navController.graph)
