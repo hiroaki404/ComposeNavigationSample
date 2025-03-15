@@ -15,18 +15,3 @@ class BirdDetailViewModel @Inject constructor(
     private val birdId = savedStateHandle.toRoute<BirdDetail>().id
     val bird = birdList.find { it.id == birdId }
 }
-
-// Don't use this pattern
-// @AssistedFactory
-// interface BirdDetailViewModel2Factory {
-//    fun create(
-//        @Assisted("birdId") birdId: Int,
-//    ): BirdDetailViewModel2
-// }
-//
-// @HiltViewModel(assistedFactory = BirdDetailViewModel2Factory::class)
-// class BirdDetailViewModel2 @AssistedInject constructor(
-//    @Assisted("birdId") private val birdId: Int,
-// ) : ViewModel() {
-//    val bird = birdList.find { it.id == birdId }
-// }

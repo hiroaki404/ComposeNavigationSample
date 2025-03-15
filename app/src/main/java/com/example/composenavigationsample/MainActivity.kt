@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         val isTopBarVisible by remember {
                             derivedStateOf {
+                                // IMO: In an actual project, it is preferable to place configuration classes corresponding to each screen and set the visibility there, rather than individually determining the route strings here.
                                 backStackEntry?.destination?.route?.contains("Main") == false
                             }
                         }
